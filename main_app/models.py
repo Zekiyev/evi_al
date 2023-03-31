@@ -23,7 +23,7 @@ class City(models.Model):
     class Meta:
         verbose_name = 'City'
         verbose_name_plural = 'Cities'
-        db_table = 'City'
+        db_table = 'cities'
 
    
 class Region(models.Model):
@@ -34,7 +34,7 @@ class Region(models.Model):
         return "{}".format(self.name)
     
     class Meta:
-        db_table = 'Region'
+        db_table = 'regions'
  
 
 class Township(models.Model):
@@ -45,7 +45,7 @@ class Township(models.Model):
         return "{}".format(self.name)
 
     class Meta:
-        db_table = 'Township'
+        db_table = 'townships'
 
 
 class Metro(models.Model):
@@ -55,7 +55,7 @@ class Metro(models.Model):
         return "{}".format(self.name)
  
     class Meta:
-        db_table = 'Metro'
+        db_table = 'metros'
 
     
 class Target(models.Model):
@@ -65,7 +65,7 @@ class Target(models.Model):
         return "{}".format(self.name)
     
     class Meta:
-        db_table = 'Target'
+        db_table = 'targets'
         
         
 class CustomUser(AbstractBaseUser, PermissionsMixin):
@@ -89,7 +89,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return self.email
     
     class Meta:
-        db_table = "User"
+        db_table = "users"
 
 
 class Advertisement(models.Model):
@@ -137,7 +137,7 @@ class Advertisement(models.Model):
                                                    default=3)
 
     class Meta:
-        db_table = 'Advertisement'
+        db_table = 'advertisements'
         
         
 class Picture(models.Model):
@@ -149,7 +149,7 @@ class Picture(models.Model):
         return "{}".format(self.name)
 
     class Meta:
-        db_table = 'Picture'    
+        db_table = 'pictures'    
     
     
 class Payment(models.Model):
@@ -163,7 +163,7 @@ class Payment(models.Model):
         return '{} - {}'.format(self.user.email, self.amount)
 
     class Meta:
-        db_table = 'Payment'        
+        db_table = 'payments'        
 
 class Transaction(models.Model):
     start_balance = models.DecimalField(max_digits=10, decimal_places=2)#null=True
@@ -178,4 +178,4 @@ class Transaction(models.Model):
         return '{} - {}'.format(self.operation, self.amount)
     
     class Meta:
-        db_table = 'Transaction'
+        db_table = 'transactions'
