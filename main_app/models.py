@@ -29,7 +29,8 @@ class City(models.Model):
    
 class Region(models.Model):
     name = models.CharField(max_length=255, verbose_name='Rayon')
-    city_id = models.GenericForeignKey(City, null=True, blank=True, on_delete=models.CASCADE)
+    city_id = models.ForeignKey(City, null=True, blank=True, on_delete=models.CASCADE,
+                                db_constraint=False)
         
     def __str__(self):
         return "{}".format(self.name)
@@ -42,7 +43,8 @@ class Region(models.Model):
 
 class Township(models.Model):
     name = models.CharField(verbose_name="Qəsəbə", max_length=255)
-    region_id = models.ForeignKey(Region, null=True, blank=True, on_delete=models.CASCADE)
+    region_id = models.ForeignKey(Region, null=True, blank=True, 
+                                  on_delete=models.CASCADE, db_constraint=False)
     
     def __str__(self):
         return "{}".format(self.name)
@@ -146,15 +148,18 @@ class Advertisement(models.Model):
     advertisement_expire_date = models.DateTimeField(blank=True, null=True)
     advertisement_deleted_date = models.DateTimeField(blank=True, null=True)
     user_id = models.ForeignKey('CustomUser', on_delete=models.CASCADE, verbose_name='İstifadəçi')
-    city_id = models.ForeignKey('City', on_delete=models.CASCADE, verbose_name='Şəhər')
+    city_id = models.ForeignKey('City', on_delete=models.CASCADE, verbose_name='Şəhər',
+                                db_constraint=False)
     region_id = models.ForeignKey('Region', on_delete=models.CASCADE, verbose_name='Rayon',
-                                  blank=True, null=True)
+                                  blank=True, null=True, db_constraint=False)
     
-    town_ship_id = models.ForeignKey('Township', on_delete=models.CASCADE, verbose_name='Qəsəbə')    
+    town_ship_id = models.ForeignKey('Township', on_delete=models.CASCADE, 
+                                     verbose_name='Qəsəbə', db_constraint=False)    
     metro_id = models.ForeignKey('Metro', on_delete=models.CASCADE, verbose_name='Metro',
-                                 blank=True, null=True)
+                                 blank=True, null=True, db_constraint=False)
     
-    target_id = models.ForeignKey('Target', on_delete=models.CASCADE, blank=True, null=True)
+    target_id = models.ForeignKey('Target', on_delete=models.CASCADE, blank=True, null=True,
+                                db_constraint=False)
     repair = models.BooleanField(verbose_name='Təmir', default=False)
     address = models.TextField(verbose_name='Ünvan', blank=True, null=True)
     
