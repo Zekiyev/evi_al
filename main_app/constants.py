@@ -6,20 +6,19 @@ ADVERTISEMENT_TYPE_CHOICES = (
   (4, 'Başqa')
 )
 
-#ADVERTISEMENT_SUB_TYPE_CHOICES = (
-#  (1, 'flat old constructed'),
-#  (2, 'flat new constructed'),
-#  (3, 'home / villa'),
-#  (4, 'garden'),
-#  (5, 'office'),
-#  (6, 'garage'),
-#  (7, 'object building'),
-#  (8, 'land'),
-#  (9, 'another'),
-#  (0, '##BUG##'),
-#
-#)
-#
+ADVERTISEMENT_SUB_TYPE_CHOICES = (
+  (1, 'sub_flat old constructed'),
+  (2, 'sub_flat new constructed'),
+  (3, 'sub_home / villa'),
+  (4, 'sub_garden'),
+  (5, 'sub_office'),
+  (6, 'sub_garage'),
+  (7, 'sub_object building'),
+  (8, 'sub_land'),
+  (9, 'sub_another'),
+
+)
+
 
 ADVERTISEMENT_VIP_TYPE_CHOICES = (
   (1, 'Normal'),
@@ -58,7 +57,6 @@ USER_TYPE_CHOICES = (
       (3, 'agency'),
       (4, 'fake_user'),
       (5, 'another'),
-      (0, '##BUG##'),
     )
 
 

@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.postgres.fields import JSONField
 from django.contrib.auth.models import (AbstractBaseUser, PermissionsMixin, Permission, 
-                                        Group, AbstractUser,)
+                                        Group,)
 from django.utils import timezone
 
 from .managers import CustomUserManager
@@ -9,7 +9,8 @@ from .constants import (ADVERTISEMENT_TYPE_CHOICES, #ADVERTISEMENT_SUB_TYPE_CHOI
                           BUILDING_TYPE_CHOICES, ADVERTISEMENT_VIP_TYPE_CHOICES, 
                           ADMIN_CONFIRMATION_STATUS_CHOICES, ADVERTISEMENT_VIP_TYPE_CHOICES,
                           USER_TYPE_CHOICES, BUILDING_PROJECT_TYPE_CHOICES, 
-                          PAYMENT_STATUS_CHOICES, TRANSACTION_OPERATION_CHOICES)
+                          PAYMENT_STATUS_CHOICES, TRANSACTION_OPERATION_CHOICES,
+                          ADVERTISEMENT_SUB_TYPE_CHOICES)
 
 
 # Create your models here.
@@ -118,7 +119,8 @@ class Advertisement(models.Model):
                                        help_text='Torpaq sahəsi, sot ilə göstərilmişdir')
 
     coast = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True,
-                                help_text='Torpaq sahəsi, sot ilə göstərilmişdir')
+                                help_text='Qiymət, manat ilə göstərilmişdir',
+                                verbose_name='Qiymət')
 
     location_width = models.DecimalField(verbose_name='Coğrafi enlik', max_digits=10, 
                                         decimal_places=7, blank=True, null=True, 
@@ -129,7 +131,8 @@ class Advertisement(models.Model):
                                           help_text='Koordinatı daxil edin')
     
     type = models.BigIntegerField(verbose_name='Tip', choices=ADVERTISEMENT_TYPE_CHOICES)
-    #sub_type = models.BigIntegerField(choices=?, verbose_name='Alt tip',)
+    sub_type = models.BigIntegerField(choices=ADVERTISEMENT_SUB_TYPE_CHOICES, 
+                                      verbose_name='Alt tip',)
     have_government_deed = models.BooleanField(verbose_name='Order', blank=True, null=True, 
                                                default=False,
                                             help_text="Order varsa 'True', yoxdursa 'False' seçin")
