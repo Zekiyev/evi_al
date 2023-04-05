@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-a@ao3j*k+=auft*%5b(+t#x1#o*!t77av@#m82xp^*j^bk87ak"
+SECRET_KEY = "django-insecure-e#o4#ttew%&q3qeeowh$kzui4kf@cai9&43lz@ut6oxg@3f334"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "main_app",
+    "evial_app",
 ]
 
 MIDDLEWARE = [
@@ -70,20 +70,28 @@ TEMPLATES = [
     },
 ]
 
+
 WSGI_APPLICATION = "core.wsgi.application"
 
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#        'NAME': 'evial', 
+#        'USER': 'postgres', 
+#        'PASSWORD': 'changeme',#'12345',
+#        'HOST': '94.20.154.220',#, 127.0.0.1
+#        'PORT': '5432',
+#    }
+#}
+import os
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'evial', 
-        'USER': 'postgres', 
-        'PASSWORD': 'changeme',#'12345',
-        'HOST': '94.20.154.220',#, 127.0.0.1
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
@@ -128,4 +136,4 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-AUTH_USER_MODEL = "main_app.CustomUser"
+AUTH_USER_MODEL = "evial_app.CustomUser"

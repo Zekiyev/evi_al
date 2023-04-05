@@ -312,6 +312,7 @@ class Target(models.Model):
         verbose_name_plural = 'Nişangahlar'
 
 
+
 class NormalUser(AbstractBaseUser):
     """
     This table refers to normal user
@@ -475,6 +476,7 @@ class Picture(models.Model):
         verbose_name_plural = 'Şəkillər'
         
 
+
 class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     """
@@ -486,6 +488,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     date_joined = models.DateTimeField(default=timezone.now)
+    groups = models.ManyToManyField(Group, blank=True, through='CustomUserGroup')
+    user_permissions = models.ManyToManyField(Permission, blank=True, through='CustomUserPermission')
 
     phone_number = models.JSONField("Mobil nömrə", max_length=13)
 
@@ -493,11 +497,30 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ['phone_number']
 
     objects = CustomUserManager()
+        
 
     def __str__(self):
         return self.email
 
     class Meta:
-        db_table = "admin_users"
+        db_table = "admins"
+        
+        
+class CustomUserGroup(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "custom_user_groups"
+
+
+class CustomUserPermission(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    permission = models.ForeignKey(Permission, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "custom_user_permissions"
+
+
 
 
