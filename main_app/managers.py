@@ -1,22 +1,21 @@
 from django.contrib.auth.base_user import BaseUserManager
 
+
 class CustomUserManager(BaseUserManager):
     """
     Custom user model manager where email is the unique identifiers
     for authentication instead of usernames.
     """
-    def create_user(self, email, password, phone_number, **extra_fields):
+
+    def create_user(self, email, password, **extra_fields):
         """
         Create and save a User with the given email and password.
         """
         if not email:
             raise ValueError('The Email must be set')
-        #if not phone_number:
-        #    raise ValueError('The Phone Number field must be set')
 
         email = self.normalize_email(email)
-        user = self.model(email=email, phone_number=phone_number,
-                          **extra_fields)
+        user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save()
         return user
@@ -34,3 +33,22 @@ class CustomUserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
         return self.create_user(email, password, **extra_fields)
+
+
+class NormalUserManager(BaseUserManager):
+    """
+    Normal user model manager where email is the unique identifiers
+    for authentication instead of usernames.
+    """
+
+    def create_user(self, email, password, **extra_fields):
+        """
+        Create and save a User with the given email and password.
+        """
+        if not email:
+            raise ValueError('The Email must be set')
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save()
+        return user
