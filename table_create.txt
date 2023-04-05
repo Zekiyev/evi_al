@@ -1,0 +1,240 @@
+-- Table: public.cities
+
+CREATE SEQUENCE IF NOT EXISTS cities_id_seq;
+
+CREATE TABLE IF NOT EXISTS public.cities
+(
+    id bigint NOT NULL DEFAULT nextval('cities_id_seq'::regclass),
+    name character varying(255) COLLATE pg_catalog."default",
+    CONSTRAINT cities_pkey PRIMARY KEY (id)
+)
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.cities
+    OWNER to postgres;
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+-- Table: public.regions
+
+CREATE SEQUENCE IF NOT EXISTS regions_id_seq;
+
+CREATE TABLE IF NOT EXISTS public.regions
+(
+    id bigint NOT NULL DEFAULT nextval('regions_id_seq'::regclass),
+    name character varying(255) COLLATE pg_catalog."default",
+    city_id bigint,
+    CONSTRAINT regions_pkey PRIMARY KEY (id)
+)
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.regions
+    OWNER to postgres;
+
+------------------------------------------------------------------------------------------------------------------------------------
+-- Table: public.townships
+
+CREATE SEQUENCE IF NOT EXISTS townships_id_seq;
+
+CREATE TABLE IF NOT EXISTS public.townships
+(
+    id bigint NOT NULL DEFAULT nextval('townships_id_seq'::regclass),
+    name character varying(255) COLLATE pg_catalog."default",
+    region_id bigint,
+    CONSTRAINT townships_pkey PRIMARY KEY (id)
+)
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.townships
+    OWNER to postgres;
+
+------------------------------------------------------------------------------------------------------------------------------------
+-- Table: public.metros
+
+CREATE SEQUENCE IF NOT EXISTS metros_id_seq;
+
+CREATE TABLE IF NOT EXISTS public.metros
+(
+    id bigint NOT NULL DEFAULT nextval('metros_id_seq'::regclass),
+    name character varying(255) COLLATE pg_catalog."default",
+    CONSTRAINT metros_pkey PRIMARY KEY (id)
+)
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.metros
+    OWNER to postgres;
+
+------------------------------------------------------------------------------------------------------------------------------------
+-- Table: public.targets
+
+CREATE SEQUENCE IF NOT EXISTS targets_id_seq;
+
+CREATE TABLE IF NOT EXISTS public.targets
+(
+    id bigint NOT NULL DEFAULT nextval('targets_id_seq'::regclass),
+    name character varying(255) COLLATE pg_catalog."default",
+    CONSTRAINT targets_pkey PRIMARY KEY (id)
+)
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.targets
+    OWNER to postgres;
+
+
+------------------------------------------------------------------------------------------------------------------------------------
+-- Table: public.users
+
+-- DROP TABLE IF EXISTS public.users;
+
+CREATE SEQUENCE IF NOT EXISTS users_id_seq;
+
+CREATE TABLE IF NOT EXISTS public.users
+(
+    id bigint NOT NULL DEFAULT nextval('users_id_seq'::regclass),
+    company_name character varying(255) COLLATE pg_catalog."default",
+    person_in_charge character varying(255) COLLATE pg_catalog."default",
+    email character varying(255) COLLATE pg_catalog."default",
+    password text COLLATE pg_catalog."default" NOT NULL,
+    user_type bigint,
+    phone_number character varying(13) COLLATE pg_catalog."default",
+    role text COLLATE pg_catalog."default",
+    CONSTRAINT users_pkey PRIMARY KEY (id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.users
+    OWNER to postgres;
+
+------------------------------------------------------------------------------------------------------------------------------------
+-- Table: public.advertisements
+
+-- DROP TABLE IF EXISTS public.advertisements;
+
+CREATE SEQUENCE IF NOT EXISTS advertisements_id_seq;
+
+CREATE TABLE IF NOT EXISTS public.advertisements
+(
+    id bigint NOT NULL DEFAULT nextval('advertisements_id_seq'::regclass),
+    room_count bigint,
+    area numeric(10,2),
+    area_of_land numeric(10,2),
+    coast numeric(10,2),
+    location_width numeric(10,7),
+    location_height numeric(10,7),
+    type bigint NOT NULL,
+    sub_type bigint NOT NULL,
+    have_government_deed boolean DEFAULT false,
+    have_mortgage_support boolean DEFAULT false,
+    building_stage_height bigint,
+    stage bigint,
+    description text COLLATE pg_catalog."default",
+    view_count bigint NOT NULL,
+    advertisement_create_date timestamp with time zone,
+    advertisement_expire_date timestamp with time zone,
+    advertisement_deleted_date timestamp with time zone,
+    user_id bigint NOT NULL,
+    city_id bigint NOT NULL,
+    region_id bigint,
+    town_ship_id bigint NOT NULL,
+    metro_id bigint,
+    target_id bigint,
+    repair boolean DEFAULT false,
+    address text COLLATE pg_catalog."default",
+    building_type bigint NOT NULL,
+    admin_confirmation_status bigint,
+    advertisement_type bigint NOT NULL,
+    advertisement_type_expire_date timestamp with time zone,
+    building_project_type bigint NOT NULL,
+    CONSTRAINT advertisements_pkey PRIMARY KEY (id),
+    CONSTRAINT fk_users_advertisement FOREIGN KEY (user_id)
+        REFERENCES public.users (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.advertisements
+    OWNER to postgres;
+
+
+------------------------------------------------------------------------------------------------------------------------------------
+-- Table: public.pictures
+
+-- DROP TABLE IF EXISTS public.pictures;
+
+CREATE SEQUENCE IF NOT EXISTS pictures_id_seq;
+
+CREATE TABLE IF NOT EXISTS public.pictures
+(
+    id bigint NOT NULL DEFAULT nextval('pictures_id_seq'::regclass),
+    url character varying(255) COLLATE pg_catalog."default",
+    deleted_date timestamp with time zone,
+    advertisement_id bigint NOT NULL,
+    CONSTRAINT pictures_pkey PRIMARY KEY (id),
+    CONSTRAINT fk_advertisements_picture FOREIGN KEY (advertisement_id)
+        REFERENCES public.advertisements (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.pictures
+    OWNER to postgres;
+------------------------------------------------------------------------------------------------------------------------------------
+
+-- Table: public.payments
+
+-- DROP TABLE IF EXISTS public.payments;
+
+CREATE SEQUENCE IF NOT EXISTS payments_id_seq;
+
+CREATE TABLE IF NOT EXISTS public.payments
+(
+    id bigint NOT NULL DEFAULT nextval('payments_id_seq'::regclass),
+    amount numeric(10,2),
+    status bigint,
+    order_id character varying(255) COLLATE pg_catalog."default",
+    session_id character varying(255) COLLATE pg_catalog."default",
+    user_id bigint NOT NULL,
+    CONSTRAINT payments_pkey PRIMARY KEY (id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.payments
+    OWNER to postgres;
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+-- Table: public.transactions
+
+-- DROP TABLE IF EXISTS public.transactions;
+
+CREATE SEQUENCE IF NOT EXISTS transactions_id_seq;
+
+CREATE TABLE IF NOT EXISTS public.transactions
+(
+    id bigint NOT NULL DEFAULT nextval('transactions_id_seq'::regclass),
+    start_balance numeric(10,2),
+    end_balance numeric(10,2),
+    amount numeric(10,2),
+    operation bigint,
+    order_id character varying(255) COLLATE pg_catalog."default",
+    session_id character varying(255) COLLATE pg_catalog."default",
+    user_id bigint NOT NULL,
+    CONSTRAINT transactions_pkey PRIMARY KEY (id),
+    CONSTRAINT fk_users_transaction FOREIGN KEY (user_id)
+        REFERENCES public.users (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.transactions
+    OWNER to postgres;
+
+

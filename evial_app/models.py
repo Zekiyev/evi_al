@@ -30,8 +30,7 @@ class City(models.Model):
 
 class Region(models.Model):
     name = models.CharField(max_length=255, verbose_name='Rayon', blank=True, null=True)
-    city = models.ForeignKey(City, null=True, blank=True, on_delete=models.CASCADE,
-                             db_constraint=False)
+    city_id = models.BigIntegerField(null=True, blank=True)
 
     def __str__(self):
         return "{}".format(self.name)
@@ -44,8 +43,7 @@ class Region(models.Model):
 
 class Township(models.Model):
     name = models.CharField(verbose_name="Qəsəbə", max_length=255, null=True, blank=True)
-    region = models.ForeignKey(Region, null=True, blank=True,
-                               on_delete=models.CASCADE, db_constraint=False)
+    region_id = models.BigIntegerField(null=True, blank=True)
 
     def __str__(self):
         return "{}".format(self.name)
@@ -79,10 +77,14 @@ class Target(models.Model):
         verbose_name = 'Nişangah'
         verbose_name_plural = 'Nişangahlar'
 
+
+
 class NormalUser(AbstractBaseUser):
     """
     This table refers to normal user
+
     """
+
     email = models.EmailField(verbose_name='Elektron poçt adresi', unique=True)
     company_name = models.CharField(verbose_name="Şirkət adı",max_length=255, null=True, blank=True)                                    
     person_in_charge = models.CharField(verbose_name="Əlaqədər şəxs", max_length=255, )
@@ -156,20 +158,15 @@ class Advertisement(models.Model):
     user = models.ForeignKey('NormalUser', on_delete=models.DO_NOTHING, verbose_name='İstifadəçi',
                              db_index=True, to_field='email')
 
-    city = models.ForeignKey('City', on_delete=models.CASCADE, verbose_name='Şəhər',
-                             db_constraint=False, db_index=False)
+    city_id = models.BigIntegerField(verbose_name='Şəhər',)
     
-    region = models.ForeignKey('Region', on_delete=models.CASCADE, verbose_name='Rayon',
-                               blank=True, null=True, db_constraint=False, db_index=False)
+    region_id = models.BigIntegerField(verbose_name='Rayon', blank=True, null=True)
 
-    town_ship = models.ForeignKey('Township', on_delete=models.CASCADE,
-                                  verbose_name='Qəsəbə', db_constraint=False, db_index=False)
+    town_ship_id = models.BigIntegerField(verbose_name='Qəsəbə')
     
-    metro = models.ForeignKey('Metro', on_delete=models.CASCADE, verbose_name='Metro',
-                              blank=True, null=True, db_constraint=False, db_index=False)
+    metro_id = models.BigIntegerField(verbose_name='Metro', blank=True, null=True)
 
-    target = models.ForeignKey('Target', on_delete=models.CASCADE, blank=True, null=True,
-                               db_constraint=False, db_index=False)
+    target_id = models.BigIntegerField('Target', blank=True, null=True)
     
     repair = models.BooleanField(verbose_name='Təmir', default=False)
     address = models.TextField(verbose_name='Ünvan', blank=True, null=True)
@@ -199,8 +196,7 @@ class Payment(models.Model):
     status = models.BigIntegerField(choices=PAYMENT_STATUS_CHOICES, blank=True, null=True)
     order = models.CharField(max_length=255, blank=True, null=True)
     session = models.CharField(max_length=255, blank=True, null=True)
-    user = models.ForeignKey(NormalUser, on_delete=models.CASCADE, 
-                             db_constraint=False, db_index=False)
+    user_id = models.BigIntegerField()
 
     def __str__(self):
         return '{} - {}'.format(self.user.email, self.amount)
@@ -217,10 +213,11 @@ class Transaction(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2,  blank=True, null=True)
     operation = models.PositiveIntegerField(choices=TRANSACTION_OPERATION_CHOICES,  
                                             blank=True, null=True)
+
     order = models.CharField(max_length=255, blank=True, null=True)
     session = models.CharField(max_length=255, blank=True, null=True)
-    user = models.ForeignKey('NormalUser', on_delete=models.DO_NOTHING, db_index=False)#,
-                             #db_constraint=False)
+    user = models.ForeignKey('NormalUser', on_delete=models.DO_NOTHING, db_index=False,
+                             db_constraint=False)
 
     def __str__(self):
         return '{} - {}'.format(self.operation, self.amount)
@@ -245,6 +242,7 @@ class Picture(models.Model):
         verbose_name_plural = 'Şəkillər'
         
 
+
 class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     """
@@ -256,6 +254,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     date_joined = models.DateTimeField(default=timezone.now)
+    groups = models.ManyToManyField(Group, blank=True, through='CustomUserGroup')
+    user_permissions = models.ManyToManyField(Permission, blank=True, through='CustomUserPermission')
 
     phone_number = models.JSONField("Mobil nömrə", max_length=13)
 
@@ -263,13 +263,30 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ['phone_number']
 
     objects = CustomUserManager()
+        
 
     def __str__(self):
         return self.email
 
     class Meta:
-        db_table = "admin_users"
-        verbose_name = 'Admin'
-        verbose_name_plural = 'Adminlər'
+        db_table = "admins"
+        
+        
+class CustomUserGroup(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "custom_user_groups"
+
+
+class CustomUserPermission(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    permission = models.ForeignKey(Permission, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "custom_user_permissions"
+
+
 
 
